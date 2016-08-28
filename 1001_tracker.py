@@ -5,7 +5,8 @@ import os
 import re
 import sys
 import json
-import tkinter
+from tkinter import *
+import math
 
 # Configuration
 #log_file_path = "C:/Users/" + os.getenv('username') + "/Documents/My Games/Binding of Isaac Rebirth/log.txt"
@@ -13,7 +14,7 @@ log_file_path = "C:/Users/" + os.getenv('username') + "/Documents/My Games/Bindi
 progress_file_name = 'progress.txt'
 
 # The Item1001Tracker class
-class Item1001Tracker(tkinter.Frame):
+class Item1001Tracker(Frame):
     def __init__(self, parent):
         # Class variables
         self.file_array_position = 0
@@ -34,7 +35,7 @@ class Item1001Tracker(tkinter.Frame):
         self.photos = {}
         for item_id in all_item_ids:
             image_path = 'collectibles/collectibles_' + item_id + '.png'
-            self.photos[item_id] = tkinter.PhotoImage(file=image_path)
+            self.photos[item_id] = PhotoImage(file=image_path)
 
         # Check for the existance of the progress file
         if os.path.isfile(progress_file_name):
@@ -61,35 +62,46 @@ class Item1001Tracker(tkinter.Frame):
 
         # Initialize a new GUI window
         self.parent = parent
-        self.window = tkinter.Toplevel(self.parent)
+        self.window = Toplevel(self.parent)
         self.window.title('1001% Tracker')  # Set the GUI title
-        self.icon = tkinter.PhotoImage(file='collectibles/collectibles_076.png')
+        self.icon = PhotoImage(file='collectibles/collectibles_076.png')
         self.window.tk.call('wm', 'iconphoto', self.window._w, self.icon)  # Set the GUI icon
         self.window.protocol('WM_DELETE_WINDOW', sys.exit)  # Close the main GUI when the window is closed
-        self.left_label = tkinter.Label(self.window, font='font 20 bold')
-        self.left_label.grid(row=0)
-        self.canvas = tkinter.Canvas(self.window, width=500)
-        self.canvas.grid(row=1)
-
+        self.left_label = Label(self.window, font='font 20 bold')
+        #self.left_label.grid(row=0)
+        self.left_label.pack(fill=X, expand=NO)
+        self.canvas = Canvas(self.window, width=500)
+        #self.canvas.grid(row=1)
+        self.canvas.pack(fill=BOTH, expand=YES)
+        self.canvas.bind('<Configure>', self.configure)
+                             
         # Initialization
         self.drawUI()
         self.parseLog()
 
+    def configure(self, event):
+        self.drawUI()
+                             
     def drawUI(self):
         items_remaining = str(len(self.items_remaining_list)) + ' items remaining.'
         self.left_label.configure(text=items_remaining)
 
         self.canvas.delete("all")
-
-        draw_x = 32
-        draw_y = 32
+        x = 32
+        y = 32
+        draw_x = x
+        draw_y = y
+        draw_w = 48
+        wwidth = self.window.winfo_width()
+        columns = int(math.floor(wwidth/draw_w))
+        
         for item_id in self.items_remaining_list:
             self.canvas.create_image((draw_x, draw_y), image=self.photos[item_id])
 
-            draw_x += 48
-            if draw_x == 32 + (48 * 10):
-                draw_x = 32
-                draw_y += 64
+            draw_x += x
+            if draw_x == x + (draw_w * columns):
+                draw_x = x
+                draw_y += x*2
 
     def parseLog(self):
         # Read the log into a variable
@@ -136,7 +148,7 @@ class Item1001Tracker(tkinter.Frame):
 # The main program
 if __name__ == '__main__':
     # Initialize the root GUI
-    root = tkinter.Tk()
+    root = Tk()
     root.withdraw()  # Hide the GUI
 
     # Show the GUI
