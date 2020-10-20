@@ -77,8 +77,6 @@ class Item1001Tracker(tkinter.Frame):
 
         # Define keyboard bindings
         self.window.bind('<MouseWheel>', self.on_mousewheel)
-        self.window.bind('<Home>', lambda event: self.canvas.yview_moveto(0))
-        self.window.bind('<End>', lambda event: self.canvas.yview_moveto(1))
         self.window.bind('<Prior>', lambda event: self.canvas.yview_scroll(-1, 'pages'))  # PgUp
         self.window.bind('<Next>', lambda event: self.canvas.yview_scroll(1, 'pages'))  # PgDn
 
@@ -102,7 +100,7 @@ class Item1001Tracker(tkinter.Frame):
         draw_y = y
         draw_w = 64
         window_width = self.window.winfo_width()
-        columns = int(math.floor(window_width / (draw_w + 1)))
+        columns = int(math.floor(window_width / (draw_w + 1)))  # We add one to account for the fact that we started 2 pixels to the right
 
         for item_id in self.items_remaining_list:
             self.canvas.create_image((draw_x, draw_y), image=self.photos[item_id])
@@ -133,7 +131,7 @@ class Item1001Tracker(tkinter.Frame):
         for line in file_array[self.file_array_position:]:
 
             # Debug
-            #print(line)
+            print(line)
 
             # A new item was picked up
             if line.startswith('Adding collectible'):

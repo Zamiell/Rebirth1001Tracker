@@ -6,5 +6,4 @@ I didn't put too much effort into this, but it should work.
 
 There is no scrollbar, but you can use the following things to scroll:
 * Mouse wheel
-* Home / End
 * PgUp / PgDn
